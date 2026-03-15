@@ -1,6 +1,21 @@
 <resources>
 
-    <style name="AppTheme" parent="AppTheme.Base" />
+    <style name="AppTheme" parent="AppTheme.Base">
+        <item name="android:windowAnimationStyle">@style/KompaktNoWindowAnimation</item>
+        <item name="android:colorForeground">@android:color/black</item>
+        <item name="android:colorBackground">@android:color/white</item>
+    </style>
+
+    <style name="KompaktNoWindowAnimation" parent="@android:style/Animation">
+        <item name="android:activityOpenEnterAnimation">@android:anim/none</item>
+        <item name="android:activityOpenExitAnimation">@android:anim/none</item>
+        <item name="android:activityCloseEnterAnimation">@android:anim/none</item>
+        <item name="android:activityCloseExitAnimation">@android:anim/none</item>
+        <item name="android:taskOpenEnterAnimation">@android:anim/none</item>
+        <item name="android:taskOpenExitAnimation">@android:anim/none</item>
+        <item name="android:taskCloseEnterAnimation">@android:anim/none</item>
+        <item name="android:taskCloseExitAnimation">@android:anim/none</item>
+    </style>
 
     <style name="roundedImageView" parent="">
         <item name="cornerFamily">rounded</item>
