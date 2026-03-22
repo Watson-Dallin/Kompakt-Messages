@@ -23,7 +23,6 @@ import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.load.resource.bitmap.DownsampleStrategy
-import com.bumptech.glide.load.resource.bitmap.FitCenter
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
@@ -43,7 +42,6 @@ import org.fossify.commons.extensions.shareTextIntent
 import org.fossify.commons.extensions.showErrorToast
 import org.fossify.commons.extensions.usableScreenSize
 import org.fossify.commons.helpers.FontHelper
-import org.fossify.commons.helpers.SimpleContactsHelper
 import org.fossify.commons.helpers.ensureBackgroundThread
 import org.fossify.commons.views.MyRecyclerView
 import org.fossify.messages.R
@@ -415,13 +413,24 @@ class ThreadAdapter(
                 applyTo(threadMessageHolder)
             }
 
-            threadMessageSenderPhoto.beVisible()
-            threadMessageSenderPhoto.setOnClickListener {
-                val contact = message.getSender()!!
-                activity.getContactFromAddress(contact.phoneNumbers.first().normalizedNumber) {
-                    if (it != null) {
-                        activity.startContactDetailsIntent(it)
+            threadMessageSenderName.apply {
+                val shouldShowSenderName = message.participants.size > 1
+                beVisibleIf(shouldShowSenderName)
+                if (shouldShowSenderName) {
+                    text = message.senderName
+                    setTextColor(textColor)
+                    setTextSize(TypedValue.COMPLEX_UNIT_PX, fontSize - 4)
+                    setOnClickListener {
+                        val contact = message.getSender() ?: return@setOnClickListener
+                        activity.getContactFromAddress(contact.phoneNumbers.first().normalizedNumber) {
+                            if (it != null) {
+                                activity.startContactDetailsIntent(it)
+                            }
+                        }
                     }
+                } else {
+                    text = ""
+                    setOnClickListener(null)
                 }
             }
 
@@ -429,23 +438,6 @@ class ThreadAdapter(
                 background = AppCompatResources.getDrawable(activity, R.drawable.item_received_background)
                 setTextColor(textColor)
                 setLinkTextColor(activity.getProperPrimaryColor())
-            }
-
-            if (!activity.isFinishing && !activity.isDestroyed) {
-                val contactLetterIcon = SimpleContactsHelper(activity).getContactLetterIcon(message.senderName)
-                val placeholder = contactLetterIcon.toDrawable(activity.resources)
-
-                val options = RequestOptions()
-                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                    .error(placeholder)
-                    .centerCrop()
-
-                Glide.with(activity)
-                    .load(message.senderPhotoUri)
-                    .placeholder(placeholder)
-                    .apply(options)
-                    .apply(RequestOptions.circleCropTransform())
-                    .into(threadMessageSenderPhoto)
             }
         }
     }
@@ -461,6 +453,8 @@ class ThreadAdapter(
 
             val primaryColor = activity.getProperPrimaryColor()
             val contrastColor = primaryColor.getContrastColor()
+
+            threadMessageSenderName.beGone()
 
             threadMessageBody.apply {
                 updateLayoutParams<RelativeLayout.LayoutParams> {
@@ -501,7 +495,7 @@ class ThreadAdapter(
         val options = RequestOptions()
             .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
             .placeholder(placeholderDrawable)
-            .transform(FitCenter())
+            .fitCenter()
 
         Glide.with(root.context)
             .load(uri)
@@ -621,16 +615,6 @@ class ThreadAdapter(
         ItemThreadSendingBinding.bind(view).threadSending.apply {
             setTextSize(TypedValue.COMPLEX_UNIT_PX, fontSize)
             setTextColor(textColor)
-        }
-    }
-
-    override fun onViewRecycled(holder: ViewHolder) {
-        super.onViewRecycled(holder)
-        if (!activity.isDestroyed && !activity.isFinishing) {
-            val binding = (holder as ThreadViewHolder).binding
-            if (binding is ItemMessageBinding) {
-                Glide.with(activity).clear(binding.threadMessageSenderPhoto)
-            }
         }
     }
 
