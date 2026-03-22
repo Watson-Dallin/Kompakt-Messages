@@ -127,6 +127,7 @@
         <activity
             android:name="org.fossify.commons.activities.CustomizationActivity"
             android:configChanges="orientation"
+            android:enabled="false"
             android:exported="false"
             android:label="@string/customize_colors"
             android:parentActivityName=".activities.SettingsActivity" />
@@ -393,7 +394,7 @@
 
         <activity-alias
             android:name=".activities.SplashActivity.Green"
-            android:enabled="true"
+            android:enabled="false"
             android:exported="true"
             android:icon="@mipmap/ic_launcher"
             android:roundIcon="@mipmap/ic_launcher"
@@ -518,7 +519,7 @@
 
         <activity-alias
             android:name=".activities.SplashActivity.Grey_black"
-            android:enabled="false"
+            android:enabled="true"
             android:exported="true"
             android:icon="@mipmap/ic_launcher_grey_black"
             android:roundIcon="@mipmap/ic_launcher_grey_black"

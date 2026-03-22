@@ -100,7 +100,7 @@ class SettingsActivity : SimpleActivity() {
         super.onResume()
         setupTopAppBar(binding.settingsAppbar, NavigationIcon.Arrow)
 
-        setupCustomizeColors()
+        hideColorCustomization()
         setupCustomizeNotifications()
         setupUseEnglish()
         setupLanguage()
@@ -131,7 +131,6 @@ class SettingsActivity : SimpleActivity() {
         }
 
         arrayOf(
-            binding.settingsColorCustomizationSectionLabel,
             binding.settingsGeneralSettingsLabel,
             binding.settingsOutgoingMessagesLabel,
             binding.settingsNotificationsLabel,
@@ -163,10 +162,10 @@ class SettingsActivity : SimpleActivity() {
         blockedNumbersAtPause = getBlockedNumbers().hashCode()
     }
 
-    private fun setupCustomizeColors() = binding.apply {
-        settingsColorCustomizationHolder.setOnClickListener {
-            startCustomizationActivity()
-        }
+    private fun hideColorCustomization() = binding.apply {
+        settingsColorCustomizationSectionLabel.beGone()
+        settingsColorCustomizationHolder.beGone()
+        settingsColorCustomizationDivider.beGone()
     }
 
     private fun setupCustomizeNotifications() = binding.apply {
