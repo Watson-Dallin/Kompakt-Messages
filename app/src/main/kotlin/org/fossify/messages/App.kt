@@ -1,11 +1,13 @@
 package org.fossify.messages
 
 import android.database.ContentObserver
+import android.graphics.Color
 import android.net.Uri
 import android.os.Handler
 import android.os.Looper
 import android.provider.ContactsContract
 import org.fossify.commons.FossifyApp
+import org.fossify.commons.extensions.baseConfig
 import org.fossify.commons.extensions.hasPermission
 import org.fossify.commons.helpers.PERMISSION_READ_CONTACTS
 import org.fossify.commons.helpers.ensureBackgroundThread
@@ -17,6 +19,8 @@ class App : FossifyApp() {
 
     override fun onCreate() {
         super.onCreate()
+        enforceKompaktMonochromeTheme()
+
         if (hasPermission(PERMISSION_READ_CONTACTS)) {
             listOf(
                 ContactsContract.Contacts.CONTENT_URI,
@@ -32,6 +36,39 @@ class App : FossifyApp() {
 
         ensureBackgroundThread {
             rescheduleAllScheduledMessages()
+        }
+    }
+
+    private fun enforceKompaktMonochromeTheme() {
+        baseConfig.apply {
+            val black = Color.BLACK
+            val white = Color.WHITE
+
+            textColor = black
+            backgroundColor = white
+            primaryColor = black
+            accentColor = black
+            appIconColor = black
+
+            customTextColor = black
+            customBackgroundColor = white
+            customPrimaryColor = black
+            customAccentColor = black
+            customAppIconColor = black
+
+            widgetBgColor = white
+            widgetTextColor = black
+
+            isSystemThemeEnabled = false
+            isGlobalThemeEnabled = false
+            isUsingModifiedAppIcon = false
+
+            if (lastHandledShortcutColor != appIconColor) {
+                lastHandledShortcutColor = appIconColor
+            }
+            if (lastIconColor != appIconColor) {
+                lastIconColor = appIconColor
+            }
         }
     }
 
